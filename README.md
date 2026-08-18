@@ -10,7 +10,7 @@ prévisions journalières + horaires.
 ## Fichiers
 
 - `custom-meteo-card.js` — le composant de carte.
-- `weather-card-aussonne.yaml` — extrait de configuration prêt à copier.
+- `custom-meteo-card.yaml` — extrait de configuration prêt à copier.
 - `hacs.json` — manifeste HACS.
 
 ## Installation via HACS
