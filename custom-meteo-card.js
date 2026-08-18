@@ -179,7 +179,7 @@ const CARD_CSS = `
   .wca-cond { font-size: 15px; opacity: .9; margin-top: 4px; }
   .wca-hilo { display:flex; gap: 14px; margin-top: 10px; font-size: 20px; font-weight: 600; width: fit-content; padding: 6px 14px; border-radius: 10px; background: rgba(255,255,255,.14); border: 1px solid rgba(255,255,255,.28); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); box-shadow: 0 2px 8px rgba(0,0,0,.18), inset 0 1px 0 rgba(255,255,255,.25); }
   .wca-hilo .hi { color: #ff6b5e; }
-  .wca-hilo .lo { color: #6ec3ff; }
+  .wca-hilo .lo { color: #38739c; }
   .wca-details { display:flex; gap: 14px; margin-top: 8px; font-size: 13px; opacity: .9; }
   .wca-details .detail { display:flex; align-items:center; gap:4px; }
   .dicon { width:14px; height:14px; fill:currentColor; flex-shrink:0; }
