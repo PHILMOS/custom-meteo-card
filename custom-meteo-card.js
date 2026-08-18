@@ -172,7 +172,7 @@ const CARD_CSS = `
   .wca-temp { font-size: 64px; font-weight: 700; line-height: 1; text-shadow: 0 2px 10px rgba(0,0,0,.35); }
   .wca-unit { font-size: 26px; font-weight: 400; vertical-align: top; margin-left: 2px; }
   .wca-cond { font-size: 15px; opacity: .9; margin-top: 4px; }
-  .wca-hilo { display:flex; gap: 14px; margin-top: 10px; font-size: 20px; font-weight: 600; }
+  .wca-hilo { display:flex; gap: 14px; margin-top: 10px; font-size: 20px; font-weight: 600; width: fit-content; padding: 6px 14px; border-radius: 10px; background: rgba(255,255,255,.14); border: 1px solid rgba(255,255,255,.28); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); box-shadow: 0 2px 8px rgba(0,0,0,.18), inset 0 1px 0 rgba(255,255,255,.25); }
   .wca-hilo .hi { color: #ff6b5e; }
   .wca-hilo .lo { color: #6ec3ff; }
   .wca-icon-big { flex-shrink:0; filter: drop-shadow(0 4px 10px rgba(0,0,0,.35)); }
