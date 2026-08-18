@@ -67,6 +67,9 @@ forecast_days: 4
 Videz le cache du navigateur (Ctrl+F5) si la carte n'apparaît pas
 immédiatement après l'ajout de la ressource.
 
+La carte dispose d'un éditeur visuel (via *Modifier* dans le tableau de
+bord) — pas besoin d'écrire le YAML à la main.
+
 ## Options de configuration
 
 | Option           | Défaut          | Description                                    |
@@ -75,6 +78,9 @@ immédiatement après l'ajout de la ressource.
 | `sun_entity`     | `sun.sun`       | Entité soleil, pour le rendu jour/nuit          |
 | `forecast_days`  | `4`             | Nombre de jours affichés dans les prévisions    |
 | `forecast_hours` | `5`             | Nombre d'heures affichées sous les prévisions   |
+| `show_hourly`    | `true`          | Afficher la ligne de prévisions horaires        |
+| `show_details`   | `true`          | Afficher humidité / vent si disponibles         |
+| `tap_action`     | `more-info`     | `more-info` ou `none` (action au clic)          |
 | `name`           | nom de l'entité | Titre affiché en haut de la carte               |
 
 ## Fonctionnement de l'arrière-plan
