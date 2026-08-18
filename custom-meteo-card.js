@@ -159,171 +159,9 @@ function fmtDay(dateStr) {
   }
 }
 
-class WeatherCardAussonne extends HTMLElement {
-  setConfig(config) {
-    if (!config || !config.entity) {
-      throw new Error("Merci de définir 'entity' (ex: weather.aussonne)");
-    }
-    this._config = {
-      sun_entity: "sun.sun",
-      forecast_days: 4,
-      name: null,
-      ...config,
-    };
-    this._forecast = null;
-    this._forecastSub = null;
-    this._lastRenderKey = null;
-    if (!this._built) {
-      this.innerHTML = `<ha-card><div class="wca-root"></div></ha-card>`;
-      this._built = true;
-    }
-  }
-
-  set hass(hass) {
-    this._hass = hass;
-    const stateObj = hass.states[this._config.entity];
-    if (!stateObj) {
-      this._renderError(`Entité introuvable : ${this._config.entity}`);
-      return;
-    }
-    if (!this._subscribedFor || this._subscribedFor !== this._config.entity) {
-      this._subscribedFor = this._config.entity;
-      this._subscribeForecast();
-    }
-    this._render();
-  }
-
-  async _subscribeForecast() {
-    if (this._forecastSub) {
-      try { this._forecastSub(); } catch (e) {}
-      this._forecastSub = null;
-    }
-    try {
-      this._forecastSub = await this._hass.connection.subscribeMessage(
-        (msg) => {
-          this._forecast = (msg && msg.forecast) || [];
-          this._render();
-        },
-        { type: "weather/subscribe_forecast", entity_id: this._config.entity, forecast_type: "daily" }
-      );
-    } catch (e) {
-      const stateObj = this._hass.states[this._config.entity];
-      this._forecast = (stateObj && stateObj.attributes && stateObj.attributes.forecast) || [];
-      this._render();
-    }
-  }
-
-  disconnectedCallback() {
-    if (this._forecastSub) {
-      try { this._forecastSub(); } catch (e) {}
-      this._forecastSub = null;
-    }
-  }
-
-  _renderError(msg) {
-    const root = this.querySelector(".wca-root");
-    if (root) root.innerHTML = `<div class="wca-error">${msg}</div>`;
-  }
-
-  _render() {
-    const hass = this._hass;
-    const cfg = this._config;
-    const stateObj = hass.states[cfg.entity];
-    if (!stateObj) return;
-
-    const condition = stateObj.state in DAY_BG ? stateObj.state : "cloudy";
-    const sunState = hass.states[cfg.sun_entity];
-    const isDay = sunState ? sunState.state === "above_horizon" : condition !== "clear-night";
-
-    const renderKey = JSON.stringify({ condition, isDay, t: stateObj.attributes.temperature, f: this._forecast });
-    if (renderKey === this._lastRenderKey) return;
-    this._lastRenderKey = renderKey;
-
-    const bg = (isDay ? DAY_BG : NIGHT_BG)[condition] || DAY_BG.cloudy;
-    const name = cfg.name || stateObj.attributes.friendly_name || "Météo";
-    const temp = stateObj.attributes.temperature;
-    const unit = hass.config?.unit_system?.temperature || "°C";
-    const label = CONDITION_LABEL_FR[condition] || condition;
-
-    const forecast = (this._forecast || []).slice(0, cfg.forecast_days);
-    const today = forecast[0];
-    const hi = today && today.temperature != null ? Math.round(today.temperature) : null;
-    const lo = today && today.templow != null ? Math.round(today.templow) : null;
-
-    const dateStr = new Intl.DateTimeFormat("fr-FR", { weekday: "long", day: "numeric", month: "long" }).format(new Date());
-
-    const particlesOverlay = this._backgroundParticles(condition, isDay);
-
-    const forecastHtml = forecast.map((f) => {
-      const c = f.condition in DAY_BG ? f.condition : "cloudy";
-      const h = f.temperature != null ? Math.round(f.temperature) : "–";
-      const l = f.templow != null ? Math.round(f.templow) : "–";
-      return `
-        <div class="wca-fday">
-          <div class="wca-fday-temp">${h}/${l}°</div>
-          <div class="wca-fday-icon">${iconSvg(c, true, { size: 40 })}</div>
-          <div class="wca-fday-name">${fmtDay(f.datetime)}</div>
-        </div>`;
-    }).join("");
-
-    const root = this.querySelector(".wca-root");
-    root.innerHTML = `
-      <div class="wca-bg" style="background:${bg}">
-        ${particlesOverlay}
-        ${mountainsSvg()}
-      </div>
-      <div class="wca-content">
-        <div class="wca-header">
-          <div>
-            <div class="wca-name">${name}</div>
-            <div class="wca-date">${dateStr}</div>
-          </div>
-        </div>
-        <div class="wca-main">
-          <div class="wca-temp-block">
-            <div class="wca-temp">${temp != null ? Math.round(temp) : "–"}<span class="wca-unit">${unit}</span></div>
-            <div class="wca-cond">${label}</div>
-            ${hi != null || lo != null ? `
-              <div class="wca-hilo">
-                ${hi != null ? `<span class="hi">▲ ${hi}°</span>` : ""}
-                ${lo != null ? `<span class="lo">▼ ${lo}°</span>` : ""}
-              </div>` : ""}
-          </div>
-          <div class="wca-icon-big">${iconSvg(condition, isDay, { size: 108 })}</div>
-        </div>
-      </div>
-      ${forecast.length ? `<div class="wca-forecast">${forecastHtml}</div>` : ""}
-    `;
-  }
-
-  _backgroundParticles(condition, isDay) {
-    if (!isDay && (condition === "clear-night" || condition === "partlycloudy" || condition === "cloudy")) {
-      return `<div class="wca-stars">${STARS.map((s, i) => `<div class="star" style="left:${s.x.toFixed(1)}%;top:${(s.y * 0.55).toFixed(1)}%;animation-delay:${(i % 6 * 0.4).toFixed(1)}s"></div>`).join("")}</div>`;
-    }
-    if (RAIN_FAMILY.includes(condition)) {
-      const n = condition === "pouring" ? 40 : 22;
-      const drops = seededPositions(n, 7, 100);
-      return `<div class="wca-rainbg">${drops.map((d, i) => `<div class="rainline" style="left:${d.x.toFixed(1)}%;animation-delay:${(i % 10 * 0.11).toFixed(2)}s;animation-duration:${(0.5 + (i % 5) * 0.08).toFixed(2)}s"></div>`).join("")}</div>`;
-    }
-    if (SNOW_FAMILY.includes(condition)) {
-      const n = 26;
-      const flakes = seededPositions(n, 13, 100);
-      return `<div class="wca-snowbg">${flakes.map((f, i) => `<div class="snowdot" style="left:${f.x.toFixed(1)}%;animation-delay:${(i % 8 * 0.5).toFixed(1)}s;animation-duration:${(4 + (i % 5)).toFixed(1)}s"></div>`).join("")}</div>`;
-    }
-    if (condition === "fog") {
-      return `<div class="wca-fogbg"><div class="fogband" style="top:30%"></div><div class="fogband" style="top:55%;animation-delay:-4s"></div><div class="fogband" style="top:78%;animation-delay:-8s"></div></div>`;
-    }
-    return "";
-  }
-
-  getCardSize() {
-    return 5;
-  }
-}
-
-const style = document.createElement("style");
-style.textContent = `
-  weather-card-aussonne ha-card { padding: 0; overflow: hidden; position: relative; }
+const CARD_CSS = `
+  :host { display: block; }
+  ha-card { padding: 0; overflow: hidden; position: relative; }
   .wca-root { position: relative; min-height: 300px; overflow: hidden; color: #fff; font-family: var(--paper-font-body1_-_font-family, Roboto, sans-serif); }
   .wca-error { padding: 16px; color: var(--error-color, red); }
   .wca-bg { position: absolute; inset: 0; overflow: hidden; }
@@ -382,8 +220,178 @@ style.textContent = `
   .wca-fogbg { position:absolute; inset:0; overflow:hidden; }
   .fogband { position:absolute; left:-30%; width:160%; height:14%; background: rgba(255,255,255,.18); border-radius:50%; filter: blur(6px); animation: fogdrift 14s ease-in-out infinite; }
   @keyframes fogdrift { 0% { transform: translateX(-5%);} 50% { transform: translateX(5%);} 100% { transform: translateX(-5%);} }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sun-group, .twinkle, .drop, .flake, .bolt, .star, .rainline, .snowdot, .fogband { animation: none !important; }
+  }
 `;
-document.head.appendChild(style);
+
+class WeatherCardAussonne extends HTMLElement {
+  constructor() {
+    super();
+    this.attachShadow({ mode: "open" });
+  }
+
+  setConfig(config) {
+    if (!config || !config.entity) {
+      throw new Error("Merci de définir 'entity' (ex: weather.aussonne)");
+    }
+    this._config = {
+      sun_entity: "sun.sun",
+      forecast_days: 4,
+      name: null,
+      ...config,
+    };
+    this._forecast = null;
+    this._forecastSub = null;
+    this._lastRenderKey = null;
+    if (!this._built) {
+      this.shadowRoot.innerHTML = `<style>${CARD_CSS}</style><ha-card><div class="wca-root"></div></ha-card>`;
+      this._built = true;
+    }
+  }
+
+  set hass(hass) {
+    this._hass = hass;
+    const stateObj = hass.states[this._config.entity];
+    if (!stateObj) {
+      this._renderError(`Entité introuvable : ${this._config.entity}`);
+      return;
+    }
+    if (!this._subscribedFor || this._subscribedFor !== this._config.entity) {
+      this._subscribedFor = this._config.entity;
+      this._subscribeForecast();
+    }
+    this._render();
+  }
+
+  async _subscribeForecast() {
+    if (this._forecastSub) {
+      try { this._forecastSub(); } catch (e) {}
+      this._forecastSub = null;
+    }
+    try {
+      this._forecastSub = await this._hass.connection.subscribeMessage(
+        (msg) => {
+          this._forecast = (msg && msg.forecast) || [];
+          this._render();
+        },
+        { type: "weather/subscribe_forecast", entity_id: this._config.entity, forecast_type: "daily" }
+      );
+    } catch (e) {
+      const stateObj = this._hass.states[this._config.entity];
+      this._forecast = (stateObj && stateObj.attributes && stateObj.attributes.forecast) || [];
+      this._render();
+    }
+  }
+
+  disconnectedCallback() {
+    if (this._forecastSub) {
+      try { this._forecastSub(); } catch (e) {}
+      this._forecastSub = null;
+    }
+  }
+
+  _renderError(msg) {
+    const root = this.shadowRoot.querySelector(".wca-root");
+    if (root) root.innerHTML = `<div class="wca-error">${msg}</div>`;
+  }
+
+  _render() {
+    const hass = this._hass;
+    const cfg = this._config;
+    const stateObj = hass.states[cfg.entity];
+    if (!stateObj) return;
+
+    const condition = stateObj.state in DAY_BG ? stateObj.state : "cloudy";
+    const sunState = hass.states[cfg.sun_entity];
+    const isDay = sunState ? sunState.state === "above_horizon" : condition !== "clear-night";
+
+    const renderKey = JSON.stringify({ condition, isDay, t: stateObj.attributes.temperature, f: this._forecast });
+    if (renderKey === this._lastRenderKey) return;
+    this._lastRenderKey = renderKey;
+
+    const bg = (isDay ? DAY_BG : NIGHT_BG)[condition] || DAY_BG.cloudy;
+    const name = cfg.name || stateObj.attributes.friendly_name || "Météo";
+    const temp = stateObj.attributes.temperature;
+    const unit = hass.config?.unit_system?.temperature || "°C";
+    const label = CONDITION_LABEL_FR[condition] || condition;
+
+    const forecast = (this._forecast || []).slice(0, cfg.forecast_days);
+    const today = forecast[0];
+    const hi = today && today.temperature != null ? Math.round(today.temperature) : null;
+    const lo = today && today.templow != null ? Math.round(today.templow) : null;
+
+    const dateStr = new Intl.DateTimeFormat("fr-FR", { weekday: "long", day: "numeric", month: "long" }).format(new Date());
+
+    const particlesOverlay = this._backgroundParticles(condition, isDay);
+
+    const forecastHtml = forecast.map((f) => {
+      const c = f.condition in DAY_BG ? f.condition : "cloudy";
+      const h = f.temperature != null ? Math.round(f.temperature) : "–";
+      const l = f.templow != null ? Math.round(f.templow) : "–";
+      return `
+        <div class="wca-fday">
+          <div class="wca-fday-temp">${h}/${l}°</div>
+          <div class="wca-fday-icon">${iconSvg(c, true, { size: 40 })}</div>
+          <div class="wca-fday-name">${fmtDay(f.datetime)}</div>
+        </div>`;
+    }).join("");
+
+    const root = this.shadowRoot.querySelector(".wca-root");
+    root.innerHTML = `
+      <div class="wca-bg" style="background:${bg}">
+        ${particlesOverlay}
+        ${mountainsSvg()}
+      </div>
+      <div class="wca-content">
+        <div class="wca-header">
+          <div>
+            <div class="wca-name">${name}</div>
+            <div class="wca-date">${dateStr}</div>
+          </div>
+        </div>
+        <div class="wca-main">
+          <div class="wca-temp-block">
+            <div class="wca-temp">${temp != null ? Math.round(temp) : "–"}<span class="wca-unit">${unit}</span></div>
+            <div class="wca-cond">${label}</div>
+            ${hi != null || lo != null ? `
+              <div class="wca-hilo">
+                ${hi != null ? `<span class="hi">▲ ${hi}°</span>` : ""}
+                ${lo != null ? `<span class="lo">▼ ${lo}°</span>` : ""}
+              </div>` : ""}
+          </div>
+          <div class="wca-icon-big">${iconSvg(condition, isDay, { size: 108 })}</div>
+        </div>
+      </div>
+      ${forecast.length ? `<div class="wca-forecast">${forecastHtml}</div>` : ""}
+    `;
+  }
+
+  _backgroundParticles(condition, isDay) {
+    if (!isDay && (condition === "clear-night" || condition === "partlycloudy" || condition === "cloudy")) {
+      return `<div class="wca-stars">${STARS.map((s, i) => `<div class="star" style="left:${s.x.toFixed(1)}%;top:${(s.y * 0.55).toFixed(1)}%;animation-delay:${(i % 6 * 0.4).toFixed(1)}s"></div>`).join("")}</div>`;
+    }
+    if (RAIN_FAMILY.includes(condition)) {
+      const n = condition === "pouring" ? 40 : 22;
+      const drops = seededPositions(n, 7, 100);
+      return `<div class="wca-rainbg">${drops.map((d, i) => `<div class="rainline" style="left:${d.x.toFixed(1)}%;animation-delay:${(i % 10 * 0.11).toFixed(2)}s;animation-duration:${(0.5 + (i % 5) * 0.08).toFixed(2)}s"></div>`).join("")}</div>`;
+    }
+    if (SNOW_FAMILY.includes(condition)) {
+      const n = 26;
+      const flakes = seededPositions(n, 13, 100);
+      return `<div class="wca-snowbg">${flakes.map((f, i) => `<div class="snowdot" style="left:${f.x.toFixed(1)}%;animation-delay:${(i % 8 * 0.5).toFixed(1)}s;animation-duration:${(4 + (i % 5)).toFixed(1)}s"></div>`).join("")}</div>`;
+    }
+    if (condition === "fog") {
+      return `<div class="wca-fogbg"><div class="fogband" style="top:30%"></div><div class="fogband" style="top:55%;animation-delay:-4s"></div><div class="fogband" style="top:78%;animation-delay:-8s"></div></div>`;
+    }
+    return "";
+  }
+
+  getCardSize() {
+    return 5;
+  }
+}
 
 customElements.define("weather-card-aussonne", WeatherCardAussonne);
 
