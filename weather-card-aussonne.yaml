@@ -2,12 +2,14 @@
 # Carte météo Aussonne — configuration Home Assistant
 # =====================================================================
 
-# 1) Enregistrer la ressource JS (à mettre dans configuration.yaml si vous
-#    gérez Lovelace en mode YAML — sinon voir README.md pour la méthode
-#    par l'interface : Paramètres > Tableaux de bord > ⋮ > Ressources)
+# 1) Ressource JS.
+#    - Installée via HACS : la ressource est ajoutée automatiquement.
+#      (sinon : Paramètres > Tableaux de bord > ⋮ > Ressources)
+#      url: /hacsfiles/custom-meteo-card/custom-meteo-card.js
+#    - Installée manuellement (fichier copié dans config/www/) :
 lovelace:
   resources:
-    - url: /local/weather-card-aussonne.js
+    - url: /local/custom-meteo-card.js
       type: module
 
 # 2) Carte à ajouter dans votre vue (dashboard) — mode YAML.
