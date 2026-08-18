@@ -184,7 +184,7 @@ const CARD_CSS = `
   .dicon { width:14px; height:14px; fill:currentColor; flex-shrink:0; }
   .wca-icon-big { flex-shrink:0; filter: drop-shadow(0 4px 10px rgba(0,0,0,.35)); }
 
-  .wca-bottom { position:relative; z-index:3; background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.3) 30%, rgba(0,0,0,.5) 100%); padding: 10px 6px 12px; }
+  .wca-bottom { position:relative; z-index:3; background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.15) 30%, rgba(0,0,0,.28) 100%); padding: 10px 6px 12px; }
   .wca-forecast { display:flex; justify-content: space-between; gap: 6px; align-items:stretch; padding-bottom: 10px; margin-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,.15); }
   .wca-hourly { display:flex; justify-content: space-between; gap: 6px; align-items:stretch; }
   .wca-fday, .wca-hitem {
