@@ -15,7 +15,7 @@ lovelace:
 # 2) Carte à ajouter dans votre vue (dashboard) — mode YAML.
 #    À copier tel quel dans la liste "cards:" de votre vue.
 - type: custom:weather-card-aussonne
-  entity: weather.aussonne
+  entity: weather.maville
   sun_entity: sun.sun
   forecast_days: 4
   forecast_hours: 5

@@ -239,7 +239,7 @@ class WeatherCardAussonne extends HTMLElement {
 
   setConfig(config) {
     if (!config || !config.entity) {
-      throw new Error("Merci de définir 'entity' (ex: weather.aussonne)");
+      throw new Error("Merci de définir 'entity' (ex: weather.maville)");
     }
     this._config = {
       sun_entity: "sun.sun",

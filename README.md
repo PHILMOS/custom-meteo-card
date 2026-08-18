@@ -59,7 +59,7 @@ collez :
 
 ```yaml
 type: custom:weather-card-aussonne
-entity: weather.aussonne
+entity: weather.maville
 sun_entity: sun.sun
 forecast_days: 4
 ```
@@ -74,7 +74,7 @@ bord) — pas besoin d'écrire le YAML à la main.
 
 | Option           | Défaut          | Description                                    |
 |------------------|-----------------|-------------------------------------------------|
-| `entity`         | *(obligatoire)* | Entité météo, ex. `weather.aussonne`            |
+| `entity`         | *(obligatoire)* | Entité météo, ex. `weather.maville`            |
 | `sun_entity`     | `sun.sun`       | Entité soleil, pour le rendu jour/nuit          |
 | `forecast_days`  | `4`             | Nombre de jours affichés dans les prévisions    |
 | `forecast_hours` | `5`             | Nombre d'heures affichées sous les prévisions   |
