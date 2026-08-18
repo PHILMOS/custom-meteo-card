@@ -185,14 +185,19 @@ const CARD_CSS = `
   .wca-icon-big { flex-shrink:0; filter: drop-shadow(0 4px 10px rgba(0,0,0,.35)); }
 
   .wca-bottom { position:relative; z-index:3; background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.3) 30%, rgba(0,0,0,.5) 100%); padding: 10px 6px 12px; }
-  .wca-forecast { display:flex; justify-content: space-around; align-items:center; padding-bottom: 10px; margin-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,.15); }
-  .wca-fday { display:flex; flex-direction:column; align-items:center; gap:2px; flex:1; min-width:0; }
+  .wca-forecast { display:flex; justify-content: space-between; gap: 6px; align-items:stretch; padding-bottom: 10px; margin-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,.15); }
+  .wca-hourly { display:flex; justify-content: space-between; gap: 6px; align-items:stretch; }
+  .wca-fday, .wca-hitem {
+    display:flex; flex-direction:column; align-items:center; gap:2px; flex:1; min-width:0;
+    padding: 8px 4px; border-radius: 10px;
+    background: rgba(255,255,255,.14); border: 1px solid rgba(255,255,255,.28);
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    box-shadow: 0 2px 8px rgba(0,0,0,.18), inset 0 1px 0 rgba(255,255,255,.25);
+  }
   .wca-fday-temp { font-size: 13px; font-weight: 600; }
   .wca-fday-name { font-size: 11px; opacity: .85; letter-spacing:.03em; }
   .wca-fday-icon svg { display:block; }
 
-  .wca-hourly { display:flex; justify-content: space-around; align-items:center; }
-  .wca-hitem { display:flex; flex-direction:column; align-items:center; gap:2px; flex:1; min-width:0; }
   .wca-hitem-temp { font-size: 13px; font-weight: 600; }
   .wca-hitem-hour { font-size: 10.5px; opacity: .8; letter-spacing:.03em; }
   .wca-hitem-icon svg { display:block; }
