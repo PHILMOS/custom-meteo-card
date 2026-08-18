@@ -385,7 +385,7 @@ class WeatherCardAussonne extends HTMLElement {
     root.innerHTML = `
       <div class="wca-bg" style="background:${bg}">
         ${particlesOverlay}
-        <div class="wca-mountains" style="background-image:url('${MOUNTAIN_IMG}');filter:${isDay ? "none" : "brightness(.55) saturate(.75)"}"></div>
+        <div class="wca-mountains" style="background-image:url('${MOUNTAIN_IMG}');filter:${isDay ? "brightness(.8) contrast(1.15) saturate(1.05)" : "brightness(.45) contrast(1.15) saturate(.7)"}"></div>
       </div>
       <div class="wca-content">
         <div class="wca-header">
