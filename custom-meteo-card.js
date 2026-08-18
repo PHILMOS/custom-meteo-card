@@ -170,13 +170,21 @@ const CARD_CSS = `
   .wca-content { position: relative; z-index: 2; padding: 18px 20px 8px 20px; }
   .wca-header { display:flex; justify-content: space-between; align-items:flex-start; }
   .wca-header-name { text-align: right; }
+  .wca-header-temp {
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    width:148px; height:148px; border-radius:50%; flex-shrink:0;
+    padding: 8px; text-align:center; box-sizing:border-box;
+    background: rgba(255,255,255,.14); border: 1px solid rgba(255,255,255,.28);
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    box-shadow: 0 2px 8px rgba(0,0,0,.18), inset 0 1px 0 rgba(255,255,255,.25);
+  }
   .wca-name { font-size: 20px; font-weight: 700; text-shadow: 0 1px 6px rgba(0,0,0,.35); }
   .wca-date { font-size: 13px; opacity: .85; text-transform: capitalize; margin-top: 2px; }
   .wca-main { display:flex; justify-content: space-between; align-items:center; margin-top: 18px; }
   .wca-temp-block { display:flex; flex-direction:column; }
-  .wca-temp { font-size: 64px; font-weight: 700; line-height: 1; text-shadow: 0 2px 10px rgba(0,0,0,.35); }
-  .wca-unit { font-size: 26px; font-weight: 400; vertical-align: top; margin-left: 2px; }
-  .wca-cond { font-size: 15px; opacity: .9; margin-top: 4px; }
+  .wca-temp { font-size: 38px; font-weight: 700; line-height: 1; text-shadow: 0 2px 10px rgba(0,0,0,.35); }
+  .wca-unit { font-size: 16px; font-weight: 400; vertical-align: top; margin-left: 1px; }
+  .wca-cond { font-size: 10.5px; opacity: .9; margin-top: 3px; line-height: 1.2; }
   .wca-hilo { display:flex; gap: 14px; margin-top: 10px; font-size: 20px; font-weight: 600; width: fit-content; padding: 6px 14px; border-radius: 10px; background: rgba(255,255,255,.14); border: 1px solid rgba(255,255,255,.28); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); box-shadow: 0 2px 8px rgba(0,0,0,.18), inset 0 1px 0 rgba(255,255,255,.25); }
   .wca-hilo .hi { color: #ff6b5e; }
   .wca-hilo .lo { color: #38739c; }
