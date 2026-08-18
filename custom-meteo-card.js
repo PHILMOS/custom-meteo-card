@@ -160,25 +160,25 @@ const MOUNTAIN_IMG = "data:image/webp;base64,UklGRqytAQBXRUJQVlA4WAoAAAAQAAAA5wM
 const CARD_CSS = `
   :host { display: block; }
   ha-card { padding: 0; overflow: hidden; position: relative; }
-  .wca-root { position: relative; height: 400px; overflow: hidden; color: #fff; font-family: var(--paper-font-body1_-_font-family, Roboto, sans-serif); }
+  .wca-root { position: relative; min-height: 300px; overflow: hidden; color: #fff; font-family: var(--paper-font-body1_-_font-family, Roboto, sans-serif); }
   .wca-error { padding: 16px; color: var(--error-color, red); }
   .wca-bg { position: absolute; inset: 0; overflow: hidden; }
-  .wca-content { position: relative; z-index: 2; padding: 20px 20px 8px 20px; }
+  .wca-content { position: relative; z-index: 2; padding: 18px 20px 84px 20px; }
   .wca-header { display:flex; justify-content: space-between; align-items:flex-start; }
   .wca-name { font-size: 20px; font-weight: 700; text-shadow: 0 1px 6px rgba(0,0,0,.35); }
   .wca-date { font-size: 13px; opacity: .85; text-transform: capitalize; margin-top: 2px; }
-  .wca-main { display:flex; justify-content: space-between; align-items:center; margin-top: 22px; }
+  .wca-main { display:flex; justify-content: space-between; align-items:center; margin-top: 18px; }
   .wca-temp-block { display:flex; flex-direction:column; }
   .wca-temp { font-size: 64px; font-weight: 700; line-height: 1; text-shadow: 0 2px 10px rgba(0,0,0,.35); }
   .wca-unit { font-size: 26px; font-weight: 400; vertical-align: top; margin-left: 2px; }
   .wca-cond { font-size: 15px; opacity: .9; margin-top: 4px; }
-  .wca-hilo { display:flex; gap: 14px; margin-top: 12px; font-size: 20px; font-weight: 600; }
+  .wca-hilo { display:flex; gap: 14px; margin-top: 10px; font-size: 20px; font-weight: 600; }
   .wca-hilo .hi { color: #ff6b5e; }
   .wca-hilo .lo { color: #6ec3ff; }
   .wca-icon-big { flex-shrink:0; filter: drop-shadow(0 4px 10px rgba(0,0,0,.35)); }
 
-  .wca-bottom { position:relative; z-index:3; background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.3) 30%, rgba(0,0,0,.5) 100%); padding: 14px 6px 16px; }
-  .wca-forecast { display:flex; justify-content: space-around; align-items:center; padding-bottom: 12px; margin-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,.15); }
+  .wca-bottom { position:relative; z-index:3; background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.3) 30%, rgba(0,0,0,.5) 100%); padding: 10px 6px 12px; }
+  .wca-forecast { display:flex; justify-content: space-around; align-items:center; padding-bottom: 10px; margin-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,.15); }
   .wca-fday { display:flex; flex-direction:column; align-items:center; gap:2px; flex:1; min-width:0; }
   .wca-fday-temp { font-size: 13px; font-weight: 600; }
   .wca-fday-name { font-size: 11px; opacity: .85; letter-spacing:.03em; }
@@ -401,7 +401,7 @@ class WeatherCardAussonne extends HTMLElement {
       return `
         <div class="wca-hitem">
           <div class="wca-hitem-temp">${t}°</div>
-          <div class="wca-hitem-icon">${iconSvg(c, true, { size: 30 })}</div>
+          <div class="wca-hitem-icon">${iconSvg(c, true, { size: 28 })}</div>
           <div class="wca-hitem-hour">${fmtHour(f.datetime)}</div>
         </div>`;
     }).join("");
@@ -429,7 +429,7 @@ class WeatherCardAussonne extends HTMLElement {
                 ${lo != null ? `<span class="lo">▼ ${lo}°</span>` : ""}
               </div>` : ""}
           </div>
-          <div class="wca-icon-big">${iconSvg(condition, isDay, { size: 104 })}</div>
+          <div class="wca-icon-big">${iconSvg(condition, isDay, { size: 108 })}</div>
         </div>
       </div>
       ${forecast.length || hourly.length ? `
