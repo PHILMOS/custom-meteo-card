@@ -160,33 +160,33 @@ const MOUNTAIN_IMG = "data:image/webp;base64,UklGRqytAQBXRUJQVlA4WAoAAAAQAAAA5wM
 const CARD_CSS = `
   :host { display: block; }
   ha-card { padding: 0; overflow: hidden; position: relative; }
-  .wca-root { position: relative; min-height: 300px; overflow: hidden; color: #fff; font-family: var(--paper-font-body1_-_font-family, Roboto, sans-serif); }
+  .wca-root { position: relative; height: 300px; overflow: hidden; color: #fff; font-family: var(--paper-font-body1_-_font-family, Roboto, sans-serif); }
   .wca-error { padding: 16px; color: var(--error-color, red); }
   .wca-bg { position: absolute; inset: 0; overflow: hidden; }
-  .wca-content { position: relative; z-index: 2; padding: 18px 20px 84px 20px; }
+  .wca-content { position: relative; z-index: 2; padding: 12px 20px 4px 20px; }
   .wca-header { display:flex; justify-content: space-between; align-items:flex-start; }
-  .wca-name { font-size: 20px; font-weight: 700; text-shadow: 0 1px 6px rgba(0,0,0,.35); }
-  .wca-date { font-size: 13px; opacity: .85; text-transform: capitalize; margin-top: 2px; }
-  .wca-main { display:flex; justify-content: space-between; align-items:center; margin-top: 18px; }
+  .wca-name { font-size: 18px; font-weight: 700; text-shadow: 0 1px 6px rgba(0,0,0,.35); }
+  .wca-date { font-size: 12px; opacity: .85; text-transform: capitalize; margin-top: 2px; }
+  .wca-main { display:flex; justify-content: space-between; align-items:center; margin-top: 10px; }
   .wca-temp-block { display:flex; flex-direction:column; }
-  .wca-temp { font-size: 64px; font-weight: 700; line-height: 1; text-shadow: 0 2px 10px rgba(0,0,0,.35); }
-  .wca-unit { font-size: 26px; font-weight: 400; vertical-align: top; margin-left: 2px; }
-  .wca-cond { font-size: 15px; opacity: .9; margin-top: 4px; }
-  .wca-hilo { display:flex; gap: 14px; margin-top: 10px; font-size: 20px; font-weight: 600; }
+  .wca-temp { font-size: 48px; font-weight: 700; line-height: 1; text-shadow: 0 2px 10px rgba(0,0,0,.35); }
+  .wca-unit { font-size: 20px; font-weight: 400; vertical-align: top; margin-left: 2px; }
+  .wca-cond { font-size: 13px; opacity: .9; margin-top: 3px; }
+  .wca-hilo { display:flex; gap: 14px; margin-top: 6px; font-size: 20px; font-weight: 600; }
   .wca-hilo .hi { color: #ff6b5e; }
   .wca-hilo .lo { color: #6ec3ff; }
   .wca-icon-big { flex-shrink:0; filter: drop-shadow(0 4px 10px rgba(0,0,0,.35)); }
 
-  .wca-bottom { position:relative; z-index:3; background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.3) 30%, rgba(0,0,0,.5) 100%); padding: 10px 6px 12px; }
-  .wca-forecast { display:flex; justify-content: space-around; align-items:center; padding-bottom: 10px; margin-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,.15); }
-  .wca-fday { display:flex; flex-direction:column; align-items:center; gap:2px; flex:1; min-width:0; }
-  .wca-fday-temp { font-size: 13px; font-weight: 600; }
-  .wca-fday-name { font-size: 11px; opacity: .85; letter-spacing:.03em; }
+  .wca-bottom { position:relative; z-index:3; background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.3) 30%, rgba(0,0,0,.5) 100%); padding: 6px 6px 8px; }
+  .wca-forecast { display:flex; justify-content: space-around; align-items:center; padding-bottom: 6px; margin-bottom: 6px; border-bottom: 1px solid rgba(255,255,255,.15); }
+  .wca-fday { display:flex; flex-direction:column; align-items:center; gap:1px; flex:1; min-width:0; }
+  .wca-fday-temp { font-size: 12px; font-weight: 600; }
+  .wca-fday-name { font-size: 10px; opacity: .85; letter-spacing:.03em; }
   .wca-fday-icon svg { display:block; }
 
   .wca-hourly { display:flex; justify-content: space-around; align-items:center; }
-  .wca-hitem { display:flex; flex-direction:column; align-items:center; gap:2px; flex:1; min-width:0; }
-  .wca-hitem-temp { font-size: 13px; font-weight: 600; }
+  .wca-hitem { display:flex; flex-direction:column; align-items:center; gap:1px; flex:1; min-width:0; }
+  .wca-hitem-temp { font-size: 12px; font-weight: 600; }
   .wca-hitem-hour { font-size: 10.5px; opacity: .8; letter-spacing:.03em; }
   .wca-hitem-icon svg { display:block; }
 
@@ -389,7 +389,7 @@ class WeatherCardAussonne extends HTMLElement {
       return `
         <div class="wca-fday">
           <div class="wca-fday-temp">${h}/${l}°</div>
-          <div class="wca-fday-icon">${iconSvg(c, true, { size: 40 })}</div>
+          <div class="wca-fday-icon">${iconSvg(c, true, { size: 30 })}</div>
           <div class="wca-fday-name">${fmtDay(f.datetime)}</div>
         </div>`;
     }).join("");
@@ -401,7 +401,7 @@ class WeatherCardAussonne extends HTMLElement {
       return `
         <div class="wca-hitem">
           <div class="wca-hitem-temp">${t}°</div>
-          <div class="wca-hitem-icon">${iconSvg(c, true, { size: 28 })}</div>
+          <div class="wca-hitem-icon">${iconSvg(c, true, { size: 22 })}</div>
           <div class="wca-hitem-hour">${fmtHour(f.datetime)}</div>
         </div>`;
     }).join("");
@@ -429,7 +429,7 @@ class WeatherCardAussonne extends HTMLElement {
                 ${lo != null ? `<span class="lo">▼ ${lo}°</span>` : ""}
               </div>` : ""}
           </div>
-          <div class="wca-icon-big">${iconSvg(condition, isDay, { size: 108 })}</div>
+          <div class="wca-icon-big">${iconSvg(condition, isDay, { size: 78 })}</div>
         </div>
       </div>
       ${forecast.length || hourly.length ? `
