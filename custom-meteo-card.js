@@ -56,8 +56,6 @@ const CONDITION_LABEL_FR = {
 
 const RAIN_FAMILY = ["rainy", "pouring", "lightning-rainy", "snowy-rainy", "hail"];
 const SNOW_FAMILY = ["snowy", "snowy-rainy"];
-const STORM_FAMILY = ["lightning", "lightning-rainy"];
-const CLOUD_FAMILY = ["cloudy", "partlycloudy", "windy", "windy-variant", ...RAIN_FAMILY, ...SNOW_FAMILY, ...STORM_FAMILY];
 
 function seededPositions(count, seedBase, spread) {
   const out = [];
@@ -74,71 +72,68 @@ function seededPositions(count, seedBase, spread) {
 
 const STARS = seededPositions(28, 42, 100);
 
-function cloudSvg({ small = false } = {}) {
-  return `<path class="cloud-shape" d="M23 62c-8 0-14-6-14-13 0-6 4-11 10-13 1-9 9-16 18-16 7 0 13 4 16 10 2-1 4-1 6-1 8 0 15 6 15 14 0 1 0 2 0 3 6 1 10 6 10 12 0 7-6 12-13 12H23z"/>`;
-}
+const ICON_BODY = {
+  sunny: `<g class="animate-sun">
+<circle class="sun" cx="50" cy="48" r="20"/>
+<g class="ray">
+<path d="M50 13v9"/><path d="M50 74v9"/><path d="M15 48h9"/><path d="M76 48h9"/>
+<path d="M25 23l6 6"/><path d="M69 67l6 6"/><path d="M75 23l-6 6"/><path d="M31 67l-6 6"/>
+</g></g>`,
+  partly_cloudy: `<g class="animate-sun"><circle class="sun" cx="38" cy="38" r="18"/></g>
+<g class="animate-cloud"><path class="cloud" d="M29 72h50c7 0 11-4 11-10 0-6-5-10-11-10-1-10-9-17-19-17-9 0-16 5-19 13-1 0-3-1-4-1-7 0-12 5-12 12 0 7 6 13 14 13z"/></g>`,
+  cloudy: `<g class="animate-cloud"><path class="cloud" d="M18 66h61c8 0 13-5 13-11 0-7-6-12-13-12-1-13-11-22-24-22-11 0-20 7-23 17-2-1-4-1-6-1-8 0-14 6-14 14 0 8 7 15 16 15z"/></g>`,
+  rain: `<g class="animate-cloud"><path class="cloud" d="M18 66h61c8 0 13-5 13-11 0-7-6-12-13-12-1-13-11-22-24-22-11 0-20 7-23 17-2-1-4-1-6-1-8 0-14 6-14 14 0 8 7 15 16 15z"/></g>
+<g class="animate-rain"><path class="rain" d="M30 75l-4 12"/><path class="rain" d="M49 75l-4 12"/><path class="rain" d="M68 75l-4 12"/></g>`,
+  heavy_rain: `<g class="animate-cloud"><path class="dark" d="M18 66h61c8 0 13-5 13-11 0-7-6-12-13-12-1-13-11-22-24-22-11 0-20 7-23 17-2-1-4-1-6-1-8 0-14 6-14 14 0 8 7 15 16 15z"/></g>
+<g class="animate-rain"><path class="rain" d="M24 75l-4 14"/><path class="rain" d="M38 75l-4 14"/><path class="rain" d="M52 75l-4 14"/><path class="rain" d="M66 75l-4 14"/><path class="rain" d="M80 75l-4 14"/></g>`,
+  storm: `<g class="animate-cloud"><path class="dark" d="M18 66h61c8 0 13-5 13-11 0-7-6-12-13-12-1-13-11-22-24-22-11 0-20 7-23 17-2-1-4-1-6-1-8 0-14 6-14 14 0 8 7 15 16 15z"/></g>
+<g class="animate-bolt"><path class="bolt" d="M54 62H42l-8 17h10l-5 15 21-23H49z"/></g>
+<g class="animate-rain2"><path class="rain" d="M25 73l-4 11"/><path class="rain" d="M76 73l-4 11"/></g>`,
+  snow: `<g class="animate-cloud"><path class="cloud" d="M18 66h61c8 0 13-5 13-11 0-7-6-12-13-12-1-13-11-22-24-22-11 0-20 7-23 17-2-1-4-1-6-1-8 0-14 6-14 14 0 8 7 15 16 15z"/></g>
+<g class="animate-snow" fill="none">
+<g class="snow"><path d="M29 76v14"/><path d="M22 83h14"/><path d="M24 78l10 10"/><path d="M34 78L24 88"/></g>
+<g class="snow"><path d="M54 76v14"/><path d="M47 83h14"/><path d="M49 78l10 10"/><path d="M59 78L49 88"/></g>
+<g class="snow"><path d="M76 76v14"/><path d="M69 83h14"/><path d="M71 78l10 10"/><path d="M81 78L71 88"/></g>
+</g>`,
+  sleet: `<g class="animate-cloud"><path class="cloud" d="M18 66h61c8 0 13-5 13-11 0-7-6-12-13-12-1-13-11-22-24-22-11 0-20 7-23 17-2-1-4-1-6-1-8 0-14 6-14 14 0 8 7 15 16 15z"/></g>
+<g class="animate-rain"><path class="rain" d="M29 75l-4 11"/><path class="rain" d="M65 75l-4 11"/></g>
+<g class="animate-snow"><g class="snow"><path d="M47 78v12"/><path d="M41 84h12"/><path d="M43 80l8 8"/><path d="M51 80l-8 8"/></g></g>`,
+  fog: `<g class="animate-cloud"><path class="cloud" d="M20 58h60c7 0 12-5 12-11 0-7-6-12-13-12-2-10-11-17-21-17-10 0-18 6-21 15-2 0-4-1-6-1-7 0-13 6-13 13 0 7 5 13 12 13z"/></g>
+<g opacity=".8">
+<path d="M18 68h64" stroke="#b9c7d5" stroke-width="7" stroke-linecap="round"/>
+<path d="M27 80h49" stroke="#d9e2ea" stroke-width="6" stroke-linecap="round"/>
+<path d="M20 91h60" stroke="#aebdca" stroke-width="5" stroke-linecap="round"/>
+</g>`,
+  wind: `<g class="animate-wind" fill="none" stroke-linecap="round">
+<path d="M12 40h56c9 0 9-12 0-12-4 0-6 2-7 5" stroke="#e8f0f7" stroke-width="7"/>
+<path d="M12 57h72c10 0 10-13 1-13-4 0-7 2-8 6" stroke="#b9d7e9" stroke-width="7"/>
+<path d="M25 74h48c8 0 8 11 0 11-3 0-5-2-6-4" stroke="#dbe9f2" stroke-width="7"/>
+<path d="M79 24l8 5-8 5" stroke="#7fc8e8" stroke-width="5"/>
+</g>`
+};
 
-function sunSvg() {
-  return `
-  <g class="sun-group">
-    <g class="sun-rays">
-      ${[0, 45, 90, 135, 180, 225, 270, 315].map(a => `<line x1="50" y1="50" x2="50" y2="16" transform="rotate(${a} 50 50)" />`).join("")}
-    </g>
-    <circle class="sun-core" cx="50" cy="50" r="19"/>
-  </g>`;
-}
-
-function moonSvg() {
-  return `
-  <g class="moon-group">
-    <path class="moon-core" d="M62 30a24 24 0 1 0 0 40 19 19 0 0 1 0-40z"/>
-    ${STARS.slice(0, 4).map((s, i) => `<circle class="twinkle" style="animation-delay:${(i * 0.5).toFixed(1)}s" cx="${(s.x * 0.3 + 12).toFixed(0)}" cy="${(s.y * 0.3 + 8).toFixed(0)}" r="1.3"/>`).join("")}
-  </g>`;
-}
+const CONDITION_ICON_KEY = {
+  "sunny": "sunny",
+  "clear-night": "sunny",
+  "partlycloudy": "partly_cloudy",
+  "cloudy": "cloudy",
+  "rainy": "rain",
+  "pouring": "heavy_rain",
+  "lightning": "storm",
+  "lightning-rainy": "storm",
+  "snowy": "snow",
+  "snowy-rainy": "sleet",
+  "hail": "sleet",
+  "fog": "fog",
+  "windy": "wind",
+  "windy-variant": "wind",
+  "exceptional": "cloudy",
+};
 
 function iconSvg(condition, isDay, { size = 90 } = {}) {
-  const parts = [];
-  const showCloud = CLOUD_FAMILY.includes(condition) || condition === "fog" || condition === "exceptional";
-  const showSunMoon = condition === "sunny" || condition === "clear-night" || condition === "partlycloudy";
-
-  if (showSunMoon) {
-    parts.push(`<g transform="translate(${showCloud ? 14 : 0}, ${showCloud ? -8 : 0}) scale(${showCloud ? 0.62 : 0.85})">${isDay ? sunSvg() : moonSvg()}</g>`);
-  }
-  if (showCloud) {
-    parts.push(`<g transform="translate(2,18) scale(0.92)">${cloudSvg()}</g>`);
-  }
-  if (RAIN_FAMILY.includes(condition)) {
-    const n = condition === "pouring" ? 5 : 3;
-    const xs = [30, 42, 54, 66, 38];
-    for (let i = 0; i < n; i++) {
-      parts.push(`<path class="drop" style="animation-delay:${(i * 0.22).toFixed(2)}s" d="M${xs[i]} 66 q3 6 0 10 q-3 -1 -3 -5 q0 -3 3 -5z"/>`);
-    }
-  }
-  if (SNOW_FAMILY.includes(condition)) {
-    const xs = [30, 44, 58, 70];
-    for (let i = 0; i < xs.length; i++) {
-      parts.push(`<g class="flake" style="animation-delay:${(i * 0.4).toFixed(2)}s" transform="translate(${xs[i]},68)">
-        <line x1="-4" y1="0" x2="4" y2="0"/><line x1="0" y1="-4" x2="0" y2="4"/>
-        <line x1="-2.8" y1="-2.8" x2="2.8" y2="2.8"/><line x1="-2.8" y1="2.8" x2="2.8" y2="-2.8"/>
-      </g>`);
-    }
-  }
-  if (STORM_FAMILY.includes(condition)) {
-    parts.push(`<path class="bolt" d="M52 58 L40 74 L48 74 L44 90 L60 70 L51 70 Z"/>`);
-  }
-  if (condition === "fog") {
-    parts.push(`<g class="fog-lines">
-      <line x1="15" y1="45" x2="85" y2="45"/><line x1="22" y1="58" x2="88" y2="58"/><line x1="12" y1="71" x2="78" y2="71"/>
-    </g>`);
-  }
-  if (condition === "windy" || condition === "windy-variant") {
-    parts.push(`<g class="wind-lines">
-      <path d="M15 42 h40 a6 6 0 1 0 -6 -6"/>
-      <path d="M18 58 h50 a6 6 0 1 1 -6 6"/>
-      <path d="M22 74 h32 a5 5 0 1 0 -5 -5"/>
-    </g>`);
-  }
-  return `<svg class="wicon cond-${condition}" width="${size}" height="${size}" viewBox="0 0 100 100">${parts.join("")}</svg>`;
+  const key = CONDITION_ICON_KEY[condition] || "cloudy";
+  const body = ICON_BODY[key] || ICON_BODY.cloudy;
+  return `<svg class="wicon3d" width="${size}" height="${size}" viewBox="0 0 100 100">${body}</svg>`;
 }
 
 function fmtDay(dateStr) {
@@ -177,7 +172,7 @@ const CARD_CSS = `
   .wca-temp { font-size: 64px; font-weight: 700; line-height: 1; text-shadow: 0 2px 10px rgba(0,0,0,.35); }
   .wca-unit { font-size: 26px; font-weight: 400; vertical-align: top; margin-left: 2px; }
   .wca-cond { font-size: 15px; opacity: .9; margin-top: 4px; }
-  .wca-hilo { display:flex; gap: 14px; margin-top: 10px; font-size: 15px; font-weight: 600; }
+  .wca-hilo { display:flex; gap: 14px; margin-top: 10px; font-size: 20px; font-weight: 600; }
   .wca-hilo .hi { color: #ff6b5e; }
   .wca-hilo .lo { color: #6ec3ff; }
   .wca-icon-big { flex-shrink:0; filter: drop-shadow(0 4px 10px rgba(0,0,0,.35)); }
@@ -197,22 +192,7 @@ const CARD_CSS = `
 
   .wca-mountains { position:absolute; left:0; right:0; bottom:0; width:100%; height:34%; background-size:cover; background-position:bottom center; background-repeat:no-repeat; }
 
-  .wicon .cloud-shape { fill: #eef3f6; }
-  .wicon .sun-core { fill: #ffd35c; }
-  .wicon .sun-rays line { stroke:#ffd35c; stroke-width:4; stroke-linecap:round; }
-  .wicon .sun-group { transform-origin: 50px 50px; animation: spin 30s linear infinite; }
-  .wicon .moon-core { fill: #dfe6f2; }
-  .wicon .twinkle { fill:#fff; animation: twinkle 2.4s ease-in-out infinite; }
-  .wicon .drop { fill:#4fb2ff; animation: fall .9s ease-in infinite; }
-  .wicon .flake { stroke:#eaf6ff; stroke-width:2; stroke-linecap:round; animation: fall 1.6s ease-in infinite; }
-  .wicon .bolt { fill:#ffd54f; animation: flash 1.6s ease-in-out infinite; }
-  .wicon .fog-lines line { stroke: rgba(255,255,255,.85); stroke-width:4; stroke-linecap:round; }
-  .wicon .wind-lines path { fill:none; stroke:#eef3f6; stroke-width:4; stroke-linecap:round; }
-
-  @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
   @keyframes twinkle { 0%,100% { opacity:.25; } 50% { opacity:1; } }
-  @keyframes fall { 0% { transform: translateY(-2px); opacity:0; } 20% { opacity:1; } 100% { transform: translateY(10px); opacity:0; } }
-  @keyframes flash { 0%,40%,100% { opacity:.85; } 45% { opacity:.2; } 50% { opacity:1; } }
 
   .wca-stars { position:absolute; inset:0; }
   .star { position:absolute; width:2px; height:2px; background:#fff; border-radius:50%; animation: twinkle 3s ease-in-out infinite; }
@@ -257,7 +237,52 @@ class WeatherCardAussonne extends HTMLElement {
     this._forecastHourlySub = null;
     this._lastRenderKey = null;
     if (!this._built) {
-      this.shadowRoot.innerHTML = `<style>${CARD_CSS}</style><ha-card><div class="wca-root"></div></ha-card>`;
+      this.shadowRoot.innerHTML = `<style>${CARD_CSS}</style><svg width="0" height="0" style="position:absolute;overflow:hidden"><defs>
+  <radialGradient id="sun" cx="35%" cy="30%">
+    <stop offset="0" stop-color="#fff7b0"/><stop offset=".45" stop-color="#ffd54a"/><stop offset="1" stop-color="#f4a900"/>
+  </radialGradient>
+  <linearGradient id="cloud" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#ffffff"/><stop offset=".45" stop-color="#e9eef5"/><stop offset="1" stop-color="#aeb9c8"/>
+  </linearGradient>
+  <linearGradient id="cloudDark" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#77889d"/><stop offset=".5" stop-color="#435367"/><stop offset="1" stop-color="#1f2b3a"/>
+  </linearGradient>
+  <linearGradient id="rain" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#aee9ff"/><stop offset=".5" stop-color="#35aeea"/><stop offset="1" stop-color="#1673c4"/>
+  </linearGradient>
+  <linearGradient id="snow" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#a9c6df"/>
+  </linearGradient>
+  <filter id="shadow" x="-30%" y="-30%" width="160%" height="180%">
+    <feDropShadow dx="0" dy="8" stdDeviation="7" flood-opacity=".25"/>
+  </filter>
+  <filter id="glow">
+    <feGaussianBlur stdDeviation="3" result="b"/>
+    <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+  <style>
+    .cloud{fill:url(#cloud);filter:url(#shadow)}
+    .dark{fill:url(#cloudDark);filter:url(#shadow)}
+    .sun{fill:url(#sun);filter:url(#glow)}
+    .ray{stroke:#ffd34d;stroke-width:9;stroke-linecap:round}
+    .rain{stroke:url(#rain);stroke-width:8;stroke-linecap:round}
+    .snow{stroke:url(#snow);stroke-width:5;stroke-linecap:round}
+    .bolt{fill:#ffd52a;filter:url(#glow)}
+    .animate-sun{transform-origin:50px 50px;animation:spin 18s linear infinite}
+    .animate-cloud{animation:float 4s ease-in-out infinite}
+    .animate-rain{animation:fall .8s linear infinite}
+    .animate-rain2{animation:fall 1.1s linear infinite .25s}
+    .animate-snow{animation:snowfall 2.4s linear infinite}
+    .animate-wind{animation:drift 2.2s ease-in-out infinite}
+    .animate-bolt{animation:flash 2.8s ease-in-out infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+    @keyframes fall{0%{transform:translateY(-7px);opacity:.35}50%{opacity:1}100%{transform:translateY(10px);opacity:.35}}
+    @keyframes snowfall{0%{transform:translateY(-5px) rotate(0);opacity:.35}50%{opacity:1}100%{transform:translateY(12px) rotate(25deg);opacity:.35}}
+    @keyframes drift{0%,100%{transform:translateX(-4px)}50%{transform:translateX(5px)}}
+    @keyframes flash{0%,82%,100%{opacity:.55}86%,90%{opacity:1}88%{opacity:.25}}
+  </style>
+</defs></svg><ha-card><div class="wca-root"></div></ha-card>`;
       this._built = true;
     }
   }
