@@ -2,10 +2,10 @@
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-41BDF5.svg)](https://github.com/hacs/integration)
 
-Carte Lovelace personnalisée : arrière-plan (ciel + montagnes) qui change
-selon la condition météo actuelle (`weather.aussonne`) et le jour/nuit
-(`sun.sun`), température, min/max du jour, icône animée, et prévisions
-sur 4 jours.
+Carte Lovelace personnalisée : arrière-plan (dégradé de ciel + photo de
+montagne) qui change selon la condition météo actuelle et le jour/nuit,
+température avec icônes 3D animées, min/max du jour, humidité/vent, et
+prévisions journalières + horaires.
 
 ## Fichiers
 
@@ -90,8 +90,20 @@ choisis à partir de l'état de `entity` (`sunny`, `partlycloudy`, `cloudy`,
 `rainy`, `pouring`, `lightning`, `lightning-rainy`, `snowy`, `snowy-rainy`,
 `hail`, `fog`, `windy`, `exceptional`, `clear-night`) combiné à l'état de
 `sun_entity` (`above_horizon` / `below_horizon`) pour les variantes
-jour/nuit. La photo de montagne en bas de carte est fixe (assombrie la
-nuit) et intégrée directement dans le fichier JS (image encodée).
+jour/nuit.
+
+La photo de montagne est fixe (encodée directement dans le fichier JS) ;
+elle remplit la carte sous l'en-tête (température/nom) jusqu'en bas, et
+s'assombrit automatiquement la nuit.
+
+## Icônes météo
+
+Les icônes (soleil, lune, nuages, pluie, neige, orage, brouillard, vent)
+sont un pack SVG 3D animé, avec dégradés/ombres/keyframes partagés une
+seule fois dans le shadow DOM du composant (pas de duplication par
+icône affichée).
+
+## Prévisions
 
 Les prévisions journalières et horaires sont récupérées via l'API moderne
 `weather/subscribe_forecast` (Home Assistant ≥ 2023.9). Si l'intégration
