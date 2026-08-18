@@ -69,12 +69,13 @@ immédiatement après l'ajout de la ressource.
 
 ## Options de configuration
 
-| Option          | Défaut          | Description                                   |
-|-----------------|-----------------|------------------------------------------------|
-| `entity`        | *(obligatoire)* | Entité météo, ex. `weather.aussonne`           |
-| `sun_entity`    | `sun.sun`       | Entité soleil, pour le rendu jour/nuit         |
-| `forecast_days` | `4`             | Nombre de jours affichés dans les prévisions   |
-| `name`          | nom de l'entité | Titre affiché en haut de la carte              |
+| Option           | Défaut          | Description                                    |
+|------------------|-----------------|-------------------------------------------------|
+| `entity`         | *(obligatoire)* | Entité météo, ex. `weather.aussonne`            |
+| `sun_entity`     | `sun.sun`       | Entité soleil, pour le rendu jour/nuit          |
+| `forecast_days`  | `4`             | Nombre de jours affichés dans les prévisions    |
+| `forecast_hours` | `5`             | Nombre d'heures affichées sous les prévisions   |
+| `name`           | nom de l'entité | Titre affiché en haut de la carte               |
 
 ## Fonctionnement de l'arrière-plan
 
@@ -83,9 +84,12 @@ choisis à partir de l'état de `entity` (`sunny`, `partlycloudy`, `cloudy`,
 `rainy`, `pouring`, `lightning`, `lightning-rainy`, `snowy`, `snowy-rainy`,
 `hail`, `fog`, `windy`, `exceptional`, `clear-night`) combiné à l'état de
 `sun_entity` (`above_horizon` / `below_horizon`) pour les variantes
-jour/nuit.
+jour/nuit. La photo de montagne en bas de carte est fixe (assombrie la
+nuit) et intégrée directement dans le fichier JS (image encodée).
 
-Les prévisions journalières sont récupérées via l'API moderne
+Les prévisions journalières et horaires sont récupérées via l'API moderne
 `weather/subscribe_forecast` (Home Assistant ≥ 2023.9). Si l'intégration
 météo ne la supporte pas, la carte se rabat sur l'attribut `forecast` de
-l'entité s'il existe encore.
+l'entité pour les prévisions journalières (les prévisions horaires
+nécessitent le support de `forecast_type: "hourly"` par l'intégration ;
+la ligne d'heures reste masquée si l'intégration ne le supporte pas).

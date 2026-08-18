@@ -18,3 +18,4 @@ lovelace:
   entity: weather.aussonne
   sun_entity: sun.sun
   forecast_days: 4
+  forecast_hours: 5
