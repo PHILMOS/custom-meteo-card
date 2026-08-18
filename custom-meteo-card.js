@@ -169,6 +169,7 @@ const CARD_CSS = `
   .wca-bg { position: absolute; inset: 0; overflow: hidden; }
   .wca-content { position: relative; z-index: 2; padding: 18px 20px 8px 20px; }
   .wca-header { display:flex; justify-content: space-between; align-items:flex-start; }
+  .wca-header-name { text-align: right; }
   .wca-name { font-size: 20px; font-weight: 700; text-shadow: 0 1px 6px rgba(0,0,0,.35); }
   .wca-date { font-size: 13px; opacity: .85; text-transform: capitalize; margin-top: 2px; }
   .wca-main { display:flex; justify-content: space-between; align-items:center; margin-top: 18px; }
@@ -474,15 +475,17 @@ class WeatherCardAussonne extends HTMLElement {
       </div>
       <div class="wca-content">
         <div class="wca-header">
-          <div>
+          <div class="wca-header-temp">
+            <div class="wca-temp">${temp != null ? Math.round(temp) : "–"}<span class="wca-unit">${unit}</span></div>
+            <div class="wca-cond">${label}</div>
+          </div>
+          <div class="wca-header-name">
             <div class="wca-name">${name}</div>
             <div class="wca-date">${dateStr}</div>
           </div>
         </div>
         <div class="wca-main">
           <div class="wca-temp-block">
-            <div class="wca-temp">${temp != null ? Math.round(temp) : "–"}<span class="wca-unit">${unit}</span></div>
-            <div class="wca-cond">${label}</div>
             ${hi != null || lo != null ? `
               <div class="wca-hilo">
                 ${hi != null ? `<span class="hi">▲ ${hi}°</span>` : ""}
